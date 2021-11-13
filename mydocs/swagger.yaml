@@ -1,0 +1,243 @@
+openapi: "3.0.0"
+info: 
+  title: Learn express and swagger
+  description: A course for writing docs
+  version: 1.1.0
+  contact:
+    email: ritheshdavid@gmail.com
+    url: "https://google.com/"
+
+# servers:
+#   - url: "https://localhost:3000/api/v1"
+#     description: For local host - secure
+#   - url: "http://localhost:3000/api/v1"
+#     description: For local host - unsecure 
+
+servers:
+  - url: "{protocol}://localhost:3000/api/{version}"
+    description: For local host
+    variables: 
+      version:
+        enum: 
+          - v1
+          - v2
+        default: v1
+      protocol:
+        enum: 
+          - http
+          - https
+        default: http
+
+components:
+  securitySchemes:
+    cookieAuth:           
+      type: apiKey
+      in: cookie
+      name: token
+    BearerAuth:
+      type: http
+      scheme: bearerAuth
+
+
+paths:
+
+  /test:
+    get:
+      tags:
+        - Test
+      summary: Return the test message
+      responses:
+        200: 
+          description: Success
+          content: 
+            application/json:
+              schema: 
+                type: string
+                exmaple: "test string"
+        400: 
+          description: Failed
+        500: 
+          description: Server returned an error
+  
+  /object:
+    get:
+      tags:
+        - Object
+      summary: Returns an object
+      responses:
+        200: 
+          description: Success
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  price:
+                    type: integer
+        400: 
+          description: Failed
+        500: 
+          description: Server returned an error 
+
+  /courses:
+    get:
+      tags:
+        - Courses
+      summary: Returns all courses from DB
+      responses:
+        200: 
+          description: Success
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: object
+                  properties: 
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    price:
+                      type: integer
+        400: 
+          description: Failed
+        500: 
+          description: Server returned an error
+
+  /courses/{id}:
+    get:
+      tags:
+        - Object
+      summary: Returns the course based on ID
+      parameters:
+        - in: path
+          name: id
+          default: 11
+          required: true
+          schema: 
+            type: string
+      responses:
+        200: 
+          description: Success
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  price:
+                    type: integer
+        400: 
+          description: Failed
+        500: 
+          description: Server returned an error 
+  
+  
+
+    /courses/add:
+    post:
+      tags:
+        - Courses
+      summary: Add a course
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      requestBody:
+        description: Enter your course details here
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                id:
+                  type: string
+                name:
+                  type: string
+                price:
+                  type: integer
+      responses:
+        200: 
+          description: Success
+          content: 
+            application/json:
+              schema: 
+                type: boolean
+        400: 
+          description: Failed
+        500: 
+          description: Server returned an error 
+          
+  /coursesquery:
+    get:
+      tags:
+        - String
+      summary: Learn about Query
+      parameters:
+        - in: query
+          name: location
+          # required: true
+          default: delhi
+          schema: 
+            type: String
+            enum:  [delhi, london, nagercoil]
+        - in: query
+          name: device
+          # required: true
+          default: web
+          schema: 
+            type: String 
+            enum: [web, mobile] 
+      responses:
+        200: 
+          description: Success
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                    location:
+                      type: string
+                    device:
+                      type: string
+                    
+        400: 
+          description: Failed
+        500: 
+          description: Server returned an error 
+
+  /imageupload:
+    post:
+      tags:
+        - Image
+      summary: Learn about uploading image
+      parameters: 
+        - in: header
+          name: auth
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary 
+      responses:
+        200: 
+          description: Success
+        400: 
+          description: Failed
+        500: 
+          description: Server returned an error 
+
+
