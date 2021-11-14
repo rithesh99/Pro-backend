@@ -141,8 +141,7 @@ paths:
           description: Server returned an error 
   
   
-
-    /courses/add:
+  /courses/add:
     post:
       tags:
         - Courses
