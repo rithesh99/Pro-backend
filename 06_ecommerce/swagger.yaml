@@ -1,0 +1,59 @@
+openapi: "3.0.0"
+info: 
+  title: E-commerce 
+  description: A course to study pro backend
+  version: 1.1.0
+  contact:
+    email: ritheshdavid@gmail.com
+    url: "https://google.com/"
+
+# servers:
+#   - url: "https://localhost:3000/api/v1"
+#     description: For local host - secure
+#   - url: "http://localhost:3000/api/v1"
+#     description: For local host - unsecure 
+
+servers:
+  - url: "{protocol}://localhost:8000/api/{version}"
+    description: For local host
+    variables: 
+      version:
+        enum: 
+          - v1
+          - v2
+        default: v1
+      protocol:
+        enum: 
+          - http
+          - https
+        default: http
+
+components:
+  securitySchemes:
+    cookieAuth:           
+      type: apiKey
+      in: cookie
+      name: token
+    BearerAuth:
+      type: http
+      scheme: bearerAuth
+
+paths:
+
+  /d:
+    get:
+      tags:
+        - Test
+      summary: Return the test message
+      responses:
+        200: 
+          description: Success
+          content: 
+            application/json:
+              schema: 
+                type: string
+                exmaple: "test string"
+        400: 
+          description: Failed
+        500: 
+          description: Server returned an error
