@@ -58,7 +58,7 @@ userSchema.methods.isValidatePassword = async function(userPassword){
 }
 
 //create and return token
-userSchema.methods.getToken = async function(){
+userSchema.methods.getJwtToken = async function(){
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET,{ expiresIn: process.env.JWT_EXPIRY })
 }
 
