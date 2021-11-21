@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // from node
 const crypto = require("crypto");
 
-const userSchema = new monggose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Please provide a name'],
@@ -63,7 +63,7 @@ userSchema.methods.getToken = async function(){
 }
 
 //generate forgot password token(string)
-userSchema.methods.getForgotPasswprdToken = async funciton(){
+userSchema.methods.getForgotPasswprdToken = async function(){
     //generate a long and random string
     const forgotToken = crypto.randomBytes(10).toString('hex');
     
