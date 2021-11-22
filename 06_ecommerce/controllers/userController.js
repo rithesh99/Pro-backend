@@ -38,3 +38,31 @@ exports.signup = BigPromise(async (req, res, next) => {
 
 })
 
+exports.login = BigPromise(async (req, res, next) => {
+    const { email, password } = req.body;
+
+    //check email and password presence
+    if(!email || !password){
+        return next(new CustomError("Enter valid credentials", 400))
+    }
+
+    //get user from DB
+    const user = await User.findOne({ email }).select("+password")
+  
+    //if user not found
+    if(!user){
+        return next(new CustomError("Email not registered", 400))
+    }
+    
+    //validate password
+    const isPasswordCorrect = await user.isValidPassword(password);
+
+    //incorrect password
+    if(!isPasswordCorrect){
+        return next(new CustomError("Password doesn't match", 400))
+    }
+
+    
+    cookieToken(user, res);
+
+})
