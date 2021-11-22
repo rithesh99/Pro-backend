@@ -24,10 +24,20 @@ app.use(express.urlencoded({extended: true}));
 
 // cookies and file middlewares
 app.use(cookieParser());
-app.use(fileUpload())
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
+
+//temp check
+app.set('view engine', 'ejs');
 
 //router middlewares
 app.use('/api/v1',home);
 app.use('/api/v1',user);
+
+app.get('/api/v1/signuptest', (req,res) => {
+    res.render("signuptest")
+});
 
 module.exports = app;
