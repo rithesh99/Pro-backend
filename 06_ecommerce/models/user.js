@@ -46,36 +46,34 @@ const userSchema = new mongoose.Schema({
 });
 
 //encrypt password before save 
-userSchema.pre('save', async function(next){
-    if(!this.isModified('password')) 
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password'))
         return next();
     this.password = await bcrypt.hash(this.password, 10)
 })
 
 //validate password
-userSchema.methods.isValidPassword = async function(userPassword){
+userSchema.methods.isValidPassword = async function (userPassword) {
     return await bcrypt.compare(userPassword, this.password)
 }
 
 //create and return token
-userSchema.methods.getJwtToken = async function(){
-    return jwt.sign({ id: this._id }, process.env.JWT_SECRET,{ expiresIn: process.env.JWT_EXPIRY })
+userSchema.methods.getJwtToken = async function () {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRY })
 }
 
 //generate forgot password token(string)
-userSchema.methods.getForgotPasswprdToken = async function(){
+userSchema.methods.getForgotPasswordToken = async function () {
     //generate a long and random string
     const forgotToken = crypto.randomBytes(10).toString('hex');
-    
     // getting a hash - make sure to get a hash on backend
     this.forgotPasswordToken = crypto
-    .createHash('sha256')
-    .update(forgotToken)
-    .digest('hex');
-    
+        .createHash('sha256')
+        .update(forgotToken)
+        .digest('hex');
+
     //time of token
-    this.forgotPasswordExpiry = process.env.FORGET_PASSWORD_EXPIRY
-    
+    this.forgotPasswordExpiry = Date.now() + process.env.FORGET_PASSWORD_EXPIRY * 60 * 1000
     return forgotToken;
 }
 
