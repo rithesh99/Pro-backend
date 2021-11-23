@@ -166,4 +166,68 @@ exports.getLoggedInUserDetails = BigPromise(async (req, res, next) => {
     })
 })
 
+exports.changePassword = BigPromise(async (req, res, next) => {
+    const { oldpassword, newpassword } = req.body;
+
+    if (!oldpassword || !newpassword) {
+        return next(new CustomError("Please enter the required fields", 400))
+    }
+
+    //get user from DB
+    const user = await User.findById(req.user.id).select("+password")
+
+    //if user not found
+    if (!user) {
+        return next(new CustomError("User not found", 400))
+    }
+
+    //validate password
+    const isOldPasswordCorrect = await user.isValidPassword(req.body.oldpassword);
+
+    //incorrect password
+    if (!isOldPasswordCorrect) {
+        return next(new CustomError("Old password doesn't match", 400))
+    }
+
+    user.password = req.body.newpassword
+    await user.save();
+
+    cookieToken(user, res);
+})
+
+exports.updateUserDetails = BigPromise(async (req, res, next) => {
+    const newData = {
+        name: req.body.name,
+        email: req.body.email
+    }
+    if (req.files && req.files.photo !== '') {
+        const user = await User.findById(req.user.id)
+
+        const imageId = user.photo.id
+        //Delete photo on cloudinary
+        const response = await cloudinary.uploader.destroy(imageId)
+
+        //upload new photo
+        let file = req.files.photo; //single object
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: 'Users',
+            width: 150,
+            crop: "scale"
+        });
+        newData.photo = {
+            id: result.public_id,
+            secure_url: result.secure_url
+        }
+    }
+    //get user from DB
+    const user = await User.findByIdAndUpdate(req.user.id, newData, {
+        new: true,
+        runValidators: true,
+        userFindAndModify: false
+    })
+
+    return res.status(200).json({
+        success: true
+    })
+})
 

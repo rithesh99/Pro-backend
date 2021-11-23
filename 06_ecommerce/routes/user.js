@@ -11,5 +11,7 @@ router.route('/logout').get(logout)
 router.route('/forgotpassword').post(forgotPassword)
 router.route('/password/reset/:token').post(resetPassword)
 router.route('/userdashboard').get(isLoggedIn, getLoggedInUserDetails)
+router.route('/password/update').post(isLoggedIn, changePassword)
+router.route('/userdashboard/update').post(isLoggedIn, updateUserDetails)
 
 module.exports = router
