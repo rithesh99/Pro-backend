@@ -257,3 +257,40 @@ exports.admingetOneUser = BigPromise(async (req, res, next) => {
         user
     })
 })
+
+exports.adminUpdateOneUserDetails = BigPromise(async (req, res, next) => {
+    const newData = {
+        name: req.body.name,
+        email: req.body.email,
+        role: req.body.role
+    }
+    if (req.files && req.files.photo !== '') {
+        const user = await User.findById(req.user.id)
+
+        const imageId = user.photo.id
+        //Delete photo on cloudinary
+        const response = await cloudinary.uploader.destroy(imageId)
+
+        //upload new photo
+        let file = req.files.photo; //single object
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: 'Users',
+            width: 150,
+            crop: "scale"
+        });
+        newData.photo = {
+            id: result.public_id,
+            secure_url: result.secure_url
+        }
+    }
+    //get user from DB
+    const user = await User.findByIdAndUpdate(req.params.id, newData, {
+        new: true,
+        runValidators: true,
+        userFindAndModify: false
+    })
+
+    return res.status(200).json({
+        success: true
+    })
+})
