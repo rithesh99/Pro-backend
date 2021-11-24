@@ -250,7 +250,7 @@ exports.managerAllUser = BigPromise(async (req, res, next) => {
 exports.admingetOneUser = BigPromise(async (req, res, next) => {
     const user = await User.findById(req.params.id);
     if (!user) {
-        return next(new CustomError("User not found", 400))
+        return next(new CustomError("User not found", 401))
     }
     return res.status(200).json({
         success: true,
@@ -292,5 +292,25 @@ exports.adminUpdateOneUserDetails = BigPromise(async (req, res, next) => {
 
     return res.status(200).json({
         success: true
+    })
+})
+
+exports.adminDeleteOneUser = BigPromise(async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+        return next(new CustomError("User not found", 400))
+    }
+
+    const imageId = user.photo.id
+    //Delete photo on cloudinary
+    const response = await cloudinary.uploader.destroy(imageId)
+
+    //delete user from DB
+    // await User.deleteOne(req.params.id)
+    await user.remove();
+
+    return res.status(200).json({
+        success: true,
+        message: "User deleted successfully"
     })
 })

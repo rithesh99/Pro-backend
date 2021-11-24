@@ -3,8 +3,8 @@ const router = express.Router()
 
 const { signup, login, logout, forgotPassword, resetPassword,
     getLoggedInUserDetails, changePassword, updateUserDetails,
-    adminAllUser, managerAllUser, admingetOneUser, adminUpdateOneUserDetails
-} = require('../controllers/userController')
+    adminAllUser, managerAllUser, admingetOneUser, adminUpdateOneUserDetails,
+    adminDeleteOneUser } = require('../controllers/userController')
 
 const { isLoggedIn, customRole } = require("../middlewares/user")
 
@@ -21,6 +21,7 @@ router.route('/admin/users').get(isLoggedIn, customRole('admin'), adminAllUser)
 router.route('/admin/user/:id')
     .get(isLoggedIn, customRole('admin'), admingetOneUser)
     .put(isLoggedIn, customRole('admin'), adminUpdateOneUserDetails)
+    .delete(isLoggedIn, customRole('admin'), adminDeleteOneUser)
 
 router.route('/manager/users').get(isLoggedIn, customRole('manager'), managerAllUser)
 
