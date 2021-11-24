@@ -3,7 +3,7 @@ const router = express.Router()
 
 const { signup, login, logout, forgotPassword, resetPassword,
     getLoggedInUserDetails, changePassword, updateUserDetails,
-    adminAllUser } = require('../controllers/userController')
+    adminAllUser, managerAllUser } = require('../controllers/userController')
 
 const { isLoggedIn, customRole } = require("../middlewares/user")
 
@@ -17,5 +17,6 @@ router.route('/password/update').post(isLoggedIn, changePassword)
 router.route('/userdashboard/update').post(isLoggedIn, updateUserDetails)
 
 router.route('/admin/users').get(isLoggedIn, customRole('admin'), adminAllUser)
+router.route('/manager/users').get(isLoggedIn, customRole('manager'), managerAllUser)
 
 module.exports = router
