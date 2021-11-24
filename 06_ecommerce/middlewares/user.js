@@ -13,3 +13,10 @@ exports.isLoggedIn = BigPromise(async (req, res, next) => {
     req.user = await User.findById(decoded.id)
     next();
 })
+
+exports.customRole = (...roles) => BigPromise(async (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+        return next(new CustomError("You are not allowed to access this page", 403))
+    }
+    next();
+})

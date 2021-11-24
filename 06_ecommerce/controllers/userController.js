@@ -137,7 +137,7 @@ exports.resetPassword = BigPromise(async (req, res, next) => {
         forgotPasswordToken: encryptToken,
         forgotPasswordExpiry: { $gt: Date.now() }
     });
-    console.log("USER ", user)
+
     if (!user) {
         return next(new CustomError("Token is invalid or expired", 400))
     }
@@ -231,3 +231,10 @@ exports.updateUserDetails = BigPromise(async (req, res, next) => {
     })
 })
 
+exports.adminAllUser = BigPromise(async (req, res, next) => {
+    const users = await User.find();
+    return res.status(200).json({
+        success: true,
+        users
+    })
+})
