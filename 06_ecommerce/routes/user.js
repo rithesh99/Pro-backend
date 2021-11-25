@@ -8,6 +8,7 @@ const { signup, login, logout, forgotPassword, resetPassword,
 
 const { isLoggedIn, customRole } = require("../middlewares/user")
 
+//user routes
 router.route('/signup').post(signup)
 router.route('/login').post(login)
 router.route('/logout').get(logout)
@@ -17,12 +18,14 @@ router.route('/userdashboard').get(isLoggedIn, getLoggedInUserDetails)
 router.route('/password/update').post(isLoggedIn, changePassword)
 router.route('/userdashboard/update').post(isLoggedIn, updateUserDetails)
 
+//admin routes
 router.route('/admin/users').get(isLoggedIn, customRole('admin'), adminAllUser)
 router.route('/admin/user/:id')
     .get(isLoggedIn, customRole('admin'), admingetOneUser)
     .put(isLoggedIn, customRole('admin'), adminUpdateOneUserDetails)
     .delete(isLoggedIn, customRole('admin'), adminDeleteOneUser)
 
+//manager routes
 router.route('/manager/users').get(isLoggedIn, customRole('manager'), managerAllUser)
 
 module.exports = router
