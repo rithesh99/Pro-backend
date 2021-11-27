@@ -122,6 +122,42 @@ exports.addReview = BigPromise(async (req, res, next) => {
     });
 });
 
+exports.deleteReview = BigPromise(async (req, res, next) => {
+    const { productId } = req.query;
+
+    const product = await Product.findById(productId);
+
+    const reviews = product.reviews.filter(
+        (rev) => rev.user.toString() !== req.user._id.toString()
+    );
+
+    const numberOfReviews = reviews.length;
+
+    // adjust ratings
+    product.ratings =
+        reviews.reduce((acc, item) => item.rating + acc, 0) /
+        reviews.length;
+
+    //update the product
+    await Product.findByIdAndUpdate(
+        productId,
+        {
+            reviews,
+            ratings,
+            numberOfReviews,
+        },
+        {
+            new: true,
+            runValidators: true,
+            useFindAndModify: false,
+        }
+    );
+
+    res.status(200).json({
+        success: true,
+    });
+});
+
 //admin controllers
 exports.adminGetAllProducts = BigPromise(async (req, res, next) => {
     const products = await Product.find();
