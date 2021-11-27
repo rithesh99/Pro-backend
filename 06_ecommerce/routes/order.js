@@ -4,7 +4,8 @@ const {
     getOneOrder,
     getLoggedInOrders,
     admingetAllOrders,
-    adminUpdateOrder
+    adminUpdateOrder,
+    adminDeleteOrder
 } = require("../controllers/orderController");
 const router = express.Router();
 const { isLoggedIn, customRole } = require("../middlewares/user");
@@ -18,5 +19,6 @@ router.route("/admin/orders").get(isLoggedIn, customRole("admin"), admingetAllOr
 router
   .route("/admin/order/:id")
   .put(isLoggedIn, customRole("admin"), adminUpdateOrder)
-  
+  .delete(isLoggedIn, customRole("admin"), adminDeleteOrder);
+
 module.exports = router;
