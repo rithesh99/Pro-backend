@@ -101,13 +101,13 @@ exports.adminUpdateONeProduct = BigPromise(async (req, res, next) => {
     if (req.files) {
         //destroy the existing image
         for (let index = 0; index < product.photos.length; index++) {
-            const res = await cloudinary.v2.uploader.destroy(
+            const res = await cloudinary.uploader.destroy(
                 product.photos[index].id
             );
         }
 
         for (let index = 0; index < req.files.photos.length; index++) {
-            let result = await cloudinary.v2.uploader.upload(
+            let result = await cloudinary.uploader.upload(
                 req.files.photos[index].tempFilePath,
                 {
                     folder: "Products", //folder name -> .env
@@ -144,7 +144,7 @@ exports.adminDeleteOneProduct = BigPromise(async (req, res, next) => {
 
     //destroy the existing image
     for (let index = 0; index < product.photos.length; index++) {
-        const res = await cloudinary.v2.uploader.destroy(product.photos[index].id);
+        const res = await cloudinary.uploader.destroy(product.photos[index].id);
     }
 
     await product.remove();
