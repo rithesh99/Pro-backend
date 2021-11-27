@@ -158,6 +158,15 @@ exports.deleteReview = BigPromise(async (req, res, next) => {
     });
 });
 
+exports.getOnlyReviewsForOneProduct = BigPromise(async (req, res, next) => {
+    const product = await Product.findById(req.query.id);
+
+    res.status(200).json({
+        success: true,
+        reviews: product.reviews,
+    });
+});
+
 //admin controllers
 exports.adminGetAllProducts = BigPromise(async (req, res, next) => {
     const products = await Product.find();
