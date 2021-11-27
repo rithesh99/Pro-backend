@@ -29,3 +29,19 @@ exports.createOrder = BigPromise(async (req, res, next) => {
         order,
     });
 });
+
+exports.getOneOrder = BigPromise(async (req, res, next) => {
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
+
+  if (!order) {
+    return next(new CustomError("please check order id", 401));
+  }
+
+  res.status(200).json({
+    success: true,
+    order,
+  });
+});
