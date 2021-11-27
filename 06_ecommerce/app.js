@@ -15,6 +15,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const home = require('./routes/home')
 const user = require('./routes/user')
 const product = require('./routes/product')
+const payment = require('./routes/payment')
 
 //morgan middleware
 app.use(morgan('tiny'))
@@ -37,6 +38,7 @@ app.set('view engine', 'ejs');
 app.use('/api/v1', home);
 app.use('/api/v1', user);
 app.use('/api/v1', product);
+app.use('/api/v1', payment);
 
 app.get('/api/v1/signuptest', (req, res) => {
     res.render("signuptest")
