@@ -21,13 +21,6 @@ class WhereClause {
         return this;
     }
 
-    pager(resultperPage) {
-        let currentPage = this.bigQ.page ? this.bigQ.page : 1;
-        let skipVal = resultperPage * (currentPage - 1);
-        this.base = this.base.limit(resultperPage).skip(skipVal)
-        return this;
-    }
-
     filter() {
         const copyQ = { ...this.bigQ };
         delete copyQ["search"];
@@ -41,6 +34,13 @@ class WhereClause {
         const jsonOfCopyQ = JSON.parse(stringOfCopyQ)
 
         this.base = this.base.find(jsonOfCopyQ)
+        return this;
+    }
+
+    pager(resultperPage) {
+        let currentPage = this.bigQ.page ? this.bigQ.page : 1;
+        let skipVal = resultperPage * (currentPage - 1);
+        this.base = this.base.limit(resultperPage).skip(skipVal)
         return this;
     }
 }
