@@ -23,7 +23,14 @@ app.use(passport.session());
 app.set('view engine', 'ejs')
 app.use('/auth', auth)
 
-app.get("/", (req, res) => {
+const isLoggedIn = (req, res, next) => {
+  if (!req.user) {
+    res.redirect("/auth/login");
+  }
+  next();
+};
+
+app.get("/", isLoggedIn, (req, res) => {
     return res.render('home')
 })
 
@@ -31,3 +38,4 @@ app.get("/", (req, res) => {
 app.listen(3000, () => {
     console.log('Server is running...')
 })
+
